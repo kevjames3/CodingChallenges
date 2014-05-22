@@ -25,16 +25,19 @@ def isPrime(num):
 	
 	return result
 
+def isPaladrome(string):
+	return string == string[::-1]
+
 if __name__ == '__main__':
 	primeList = []
 	for num in range(0, 1001):
 		if isPrime(num):
 			primeList.append(num)
 
-	largetPalandromePrime = 2
+	#List is already sorted, don't need to try anything else
+	largetPalandromePrime = 0
 	for prime in primeList:
-		stringVersion = str(prime)
-		if stringVersion == stringVersion[::-1]:
+		if isPaladrome(str(prime)):
 			largetPalandromePrime = prime
 
 	print largetPalandromePrime
