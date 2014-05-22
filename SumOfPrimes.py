@@ -27,8 +27,10 @@ def isPrime(num):
 
 if __name__ == '__main__':
 	primeList = []
-	for num in range(0, 1001):
-		if isPrime(num):
-			primeList.append(num)
+	currentNumber = 0
+	while len(primeList) < 1000:
+		if isPrime(currentNumber):
+			primeList.append(currentNumber)
+		currentNumber += 1
 
 	print sum(primeList)
