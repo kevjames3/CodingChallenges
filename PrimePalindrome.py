@@ -30,5 +30,11 @@ if __name__ == '__main__':
 	for num in range(0, 1001):
 		if isPrime(num):
 			primeList.append(num)
-	
-	print primeList 
+
+	largetPalandromePrime = 2
+	for prime in primeList:
+		stringVersion = str(prime)
+		if stringVersion == stringVersion[::-1]:
+			largetPalandromePrime = prime
+
+	print largetPalandromePrime
