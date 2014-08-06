@@ -1,7 +1,21 @@
+'''
+Run with one command line argument: the file that will be have every other number printed.
+In this case, this file will be StackTestSample.txt
+
+Example: python StackTest.py StackTestSample.txt
+'''
+
 import sys
 
 def printEveryOtherNumber(array):
-	print array
+	string = ""
+	for i in range(0, len(array)):
+		itemPopped = array.pop()
+		if i % 2 == 0:
+			string = string + str(itemPopped) + " "
+
+	print string.strip()
+
 
 if __name__ == '__main__':
 	if len(sys.argv) != 2:
