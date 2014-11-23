@@ -50,11 +50,10 @@ def processFile(fileHandle):
 if __name__ == '__main__':
     if(len(sys.argv) != 2 and len(sys.argv) != 3):
         print "Incorrect command line arguments"
-        print "Useage: LongestCommonSubsequence.py [File] [?'Testing']"
+        print "Useage: LongestCommonSubsequence.py [File]"
         sys.exit(1)
 
     filepath = sys.argv[1]
-    testing = (True if len(sys.argv) == 3 and sys.argv[2] == "Testing" else False)  
 
     fileHandle = open(filepath, 'r')
     processFile(fileHandle)
