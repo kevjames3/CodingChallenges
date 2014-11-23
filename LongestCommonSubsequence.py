@@ -32,8 +32,15 @@ if __name__ == '__main__':
 
     fileHandle = open(filepath, 'r')
     for line in fileHandle:
-        test, answer = map(str.strip, line.split("#"))  
-        x,y = map(str.strip, test.split(";"))
+        if line.strip() == "":
+            continue;
+        
+        x,y = map(str.strip, line.split(";"))
+
+        if len(x) > 50 or len(y) > 50:
+            #This is based on the requirement in the document
+            continue
+
         if testing:
             print "Output: '%s', Answer: '%s'" % (longestCommonSubsequence(x, y), answer)
         else:
