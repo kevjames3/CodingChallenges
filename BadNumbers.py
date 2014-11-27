@@ -1,5 +1,20 @@
 import sys
 
+def getCombinationsOfOperators(places):
+    validOperatiors = ['+', '-', '']
+    returnedCombinations = []
+
+    if places == 1: #We reached the bottom of the stack
+        for operator in validOperatiors:
+            returnedCombinations.append([operator])
+    else:
+        for operator in validOperatiors:
+            children = getCombinationsOfOperators(places - 1)
+            for child in children:
+                returnedCombinations.append([operator] + child)
+
+    return returnedCombinations
+
 def combinationsOfBadValues(value):
     return None
     
