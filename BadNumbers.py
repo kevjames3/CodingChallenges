@@ -4,7 +4,9 @@ def getCombinationsOfOperators(places):
     validOperatiors = ['+', '-', '']
     returnedCombinations = []
 
-    if places == 1: #We reached the bottom of the stack
+    if places == 0:
+        return ['']
+    elif places == 1: #We reached the bottom of the stack
         for operator in validOperatiors:
             returnedCombinations.append([operator])
     else:
@@ -15,15 +17,41 @@ def getCombinationsOfOperators(places):
 
     return returnedCombinations
 
+def isUgly(expression):
+    divisbleNumbers = [2,3,5,7]
+    finalValue = eval(expression)
+
+    isUgly = False
+    if finalValue != 1 and finalValue != 0:
+        for num in divisbleNumbers:
+            if finalValue % num:
+                isUgly = True
+
+    return isUgly
+
 def combinationsOfBadValues(value):
-    return None
+    operatorCombinations = getCombinationsOfOperators(len(str(value)) - 1)
+    combosUgly = 0
+
+    for combo in operatorCombinations:
+        expression = str(value[0])
+        currIndex = 1
+        for operator in combo:
+            expression += operator
+            expression += str(value[currIndex])
+            currIndex += 1
+
+        if isUgly(expression):
+            combosUgly += 1
+
+    return combosUgly
     
 def processFile(fileHandle):
     for line in fileHandle:
         if not line.strip():
             continue;
         
-        print combinationsOfBadValues(line)
+        print combinationsOfBadValues(line.strip())
 
 if __name__ == '__main__':
     if(len(sys.argv) != 2 and len(sys.argv) != 3):
