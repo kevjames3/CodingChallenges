@@ -33,11 +33,11 @@ def isUgly(expression):
     return isUgly
 
 def combinationsOfBadValues(value):
+    value = re.sub('0{2,}', '0', value)
     operatorCombinations = getCombinationsOfOperators(len(str(value)) - 1)
     combosUgly = 0
 
     for combo in operatorCombinations:
-        
         #Create the expression
         expression = str(value[0])
         currIndex = 1
