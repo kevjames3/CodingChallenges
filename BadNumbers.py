@@ -1,4 +1,5 @@
 import sys
+import re
 
 def getCombinationsOfOperators(places):
     validOperatiors = ['+', '-', '']
@@ -20,11 +21,13 @@ def getCombinationsOfOperators(places):
 def isUgly(expression):
     divisbleNumbers = [2,3,5,7]
     finalValue = eval(expression)
-
     isUgly = False
-    if finalValue != 1 and finalValue != 0:
+
+    if finalValue == 0:
+        isUgly = True
+    else:
         for num in divisbleNumbers:
-            if finalValue % num:
+            if not finalValue % num:
                 isUgly = True
 
     return isUgly
@@ -34,6 +37,8 @@ def combinationsOfBadValues(value):
     combosUgly = 0
 
     for combo in operatorCombinations:
+        
+        #Create the expression
         expression = str(value[0])
         currIndex = 1
         for operator in combo:
@@ -41,6 +46,15 @@ def combinationsOfBadValues(value):
             expression += str(value[currIndex])
             currIndex += 1
 
+        #Make sure all items in the list are parsible as ints
+        tokenizedExpression = re.split("(\+|-)", expression)
+        expression = "" #reset the expression, as we will re-add to it
+        for token in tokenizedExpression:
+            if re.match("\d+", token):
+                token = str(int(token))
+            expression += token
+
+        #Now check if it is ugly
         if isUgly(expression):
             combosUgly += 1
 
