@@ -33,7 +33,7 @@ def isUgly(expression):
     return isUgly
 
 def combinationsOfBadValues(value):
-    value = re.sub('0{2,}', '0', value)
+    value = re.sub('0{2,}', '0', value) #Remove the case of two or more zeros
     operatorCombinations = getCombinationsOfOperators(len(str(value)) - 1)
     combosUgly = 0
 
