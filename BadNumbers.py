@@ -37,19 +37,28 @@ def isUgly(expression):
 def combinationsOfBadValues(value):
     #Count how many times zeros occur, because we are going to need to compensate 
     #if we account for optimizations
-    additionalCombinationsIfUgly = 0
-    for group in re.compile('(0{2,})').findall(value):
-        numOfZeros = len(group)
-        additionalCombinationsIfUgly += int(math.pow(len(VALID_OPERATORS), numOfZeros - 1))
+    #additionalCombinationsIfUgly = 1
+    additionalCombinationsIfUgly = int(math.pow(len(VALID_OPERATORS), value.count('0') - 1))
+    value = re.sub('0', '', value) #Remove the case of two or more zeros for optimizations.
+    
+    spacesForOperators = 0
+    if additionalCombinationsIfUgly > 1:
+       spacesForOperators = len(str(value))
+    else:
+        spacesForOperators = len(str(value)) - 1
 
-    value = re.sub('0{2,}', '0', value) #Remove the case of two or more zeros for optimizations.
-    operatorCombinations = getCombinationsOfOperators(len(str(value)) - 1)
+    operatorCombinations = getCombinationsOfOperators(spacesForOperators)
     combosUgly = 0
 
     for combo in operatorCombinations:
         #Create the expression
-        expression = str(value[0])
-        currIndex = 1
+        expression = ""
+        currIndex = 0
+
+        if len(combo) < len(value):
+            expression = str(value[0])
+            currIndex = 1
+
         for operator in combo:
             expression += operator
             expression += str(value[currIndex])
