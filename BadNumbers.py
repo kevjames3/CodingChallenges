@@ -1,17 +1,19 @@
 import sys
 import re
+import math
+
+VALID_OPERATORS = ['+', '-', '']
 
 def getCombinationsOfOperators(places):
-    validOperatiors = ['+', '-', '']
     returnedCombinations = []
 
     if places == 0:
         return ['']
     elif places == 1: #We reached the bottom of the stack
-        for operator in validOperatiors:
+        for operator in VALID_OPERATORS:
             returnedCombinations.append([operator])
     else:
-        for operator in validOperatiors:
+        for operator in VALID_OPERATORS:
             children = getCombinationsOfOperators(places - 1)
             for child in children:
                 returnedCombinations.append([operator] + child)
@@ -33,7 +35,14 @@ def isUgly(expression):
     return isUgly
 
 def combinationsOfBadValues(value):
-    value = re.sub('0{2,}', '0', value) #Remove the case of two or more zeros
+    #Count how many times zeros occur, because we are going to need to compensate 
+    #if we account for optimizations
+    additionalCombinationsIfUgly = 0
+    for group in re.compile('(0{2,})').findall(value):
+        numOfZeros = len(group)
+        additionalCombinationsIfUgly += int(math.pow(len(VALID_OPERATORS), numOfZeros - 1))
+
+    value = re.sub('0{2,}', '0', value) #Remove the case of two or more zeros for optimizations.
     operatorCombinations = getCombinationsOfOperators(len(str(value)) - 1)
     combosUgly = 0
 
@@ -56,7 +65,7 @@ def combinationsOfBadValues(value):
 
         #Now check if it is ugly
         if isUgly(expression):
-            combosUgly += 1
+            combosUgly += 1 * additionalCombinationsIfUgly
 
     return combosUgly
     
