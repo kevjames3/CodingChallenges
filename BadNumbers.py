@@ -2,41 +2,6 @@ import sys
 import re
 import math
 
-VALID_OPERATORS = ['+', '-', '']
-
-def combinationsOfBadValues_Contained(expression):
-    if len(expression) == 0:
-        return 0
-    elif len(expression) == 1:
-        return 1 if isUgly(expression) else 0
-    else:
-        return combinationsOfBadValues_Contained_Helper(expression, 1)
-
-def combinationsOfBadValues_Contained_Helper(expression, operatorPosition):
-    if(operatorPosition >= len(expression)):
-        tokenizedExpression = re.split("(\+|-)", expression)
-        expression = "" #reset the expression, as we will re-add to it
-        for token in tokenizedExpression:
-            if re.match("\d+", token):
-                token = str(int(token))
-            expression += token
-
-        return 1 if isUgly(expression) else 0
-    else:
-        combinations = 0
-        for operator in VALID_OPERATORS:
-            nextChar = expression[operatorPosition:][0] #Peek at the next char, see if it is a zero
-
-            newExpression = expression[0:operatorPosition] + operator + expression[operatorPosition:]
-            offsetDueToNewCharacter = 1 + (0 if operator == "" else 1)
-            combinations += combinationsOfBadValues_Contained_Helper(newExpression, operatorPosition + offsetDueToNewCharacter)
-
-            if nextChar is "0":
-                combinations *= 3
-                break
-
-        return combinations
-
 def isUgly(expression):
     divisbleNumbers = [2,3,5,7]
     finalValue = eval(expression)
@@ -57,17 +22,64 @@ def getCombinationsOfOperators(places):
     if places == 0:
         return ['']
     elif places == 1: #We reached the bottom of the stack
-        for operator in VALID_OPERATORS:
+        for operator in ['+', '-', '']:
             returnedCombinations.append([operator])
     else:
-        for operator in VALID_OPERATORS:
+        for operator in ['+', '-', '']:
             children = getCombinationsOfOperators(places - 1)
             for child in children:
                 returnedCombinations.append([operator] + child)
 
     return returnedCombinations
 
-def combinationsOfBadValues(value):    
+def combinationsOfBadValues(expression):
+    if len(expression) == 0:
+        return 0
+    elif len(expression) == 1:
+        return 1 if isUgly(expression) else 0
+    else:
+        return combinationsOfBadValues_Helper(expression, 1)
+
+def combinationsOfBadValues_Helper(expression, operatorPosition):
+    if(operatorPosition >= len(expression)):
+        tokenizedExpression = re.split("(\+|-)", expression)
+        originalExpression = expression
+        expression = "" #reset the expression, as we will re-add to it
+        for token in tokenizedExpression:
+            if re.match("\d+", token):
+                token = str(int(token))
+            expression += token
+
+        #print "Expression: %s, IsUgly: %s" % (originalExpression, isUgly(expression))
+        return 1 if isUgly(expression) else 0
+    else:
+        combinations = 0
+        nextChar = expression[operatorPosition:][0:1] #Peek at the next char, see if it is a 00
+
+        skipNumericalOperators = False #We will be skipping loop iterations if the next char is '0' as +0 == -0
+        numericalOperators = ['+', '-']
+        nonOperators = ['']
+        operators = nonOperators + numericalOperators
+
+        for operator in operators: 
+            if skipNumericalOperators and operator in numericalOperators:
+                continue 
+
+            combinationsFromExpression = 0
+
+            newExpression = expression[0:operatorPosition] + operator + expression[operatorPosition:]
+            offsetDueToNewCharacter = 1 + (0 if operator == "" else 1)
+            combinationsFromExpression = combinationsOfBadValues_Helper(newExpression, operatorPosition + offsetDueToNewCharacter)
+
+            if nextChar is "00" and operator in numericalOperators:
+                combinationsFromExpression *= 2 * (len(numericalOperators) - 1)
+                skipNumericalOperators = True   
+
+            combinations += combinationsFromExpression
+
+        return combinations
+
+def combinationsOfBadValues_Gold(value):    
     spacesForOperators = len(str(value)) - 1
 
     operatorCombinations = getCombinationsOfOperators(spacesForOperators)
@@ -89,6 +101,7 @@ def combinationsOfBadValues(value):
 
         #Make sure all items in the list are parsible as ints
         tokenizedExpression = re.split("(\+|-)", expression)
+        originalExpression = expression
         expression = "" #reset the expression, as we will re-add to it
         for token in tokenizedExpression:
             if re.match("\d+", token):
@@ -96,6 +109,7 @@ def combinationsOfBadValues(value):
             expression += token
 
         #Now check if it is ugly
+        #print "Expression: %s, IsUgly: %s" % (originalExpression, isUgly(expression))
         if isUgly(expression):
             combosUgly += 1
 
@@ -107,8 +121,8 @@ def processFile(fileHandle):
             continue;
         
         print "For line: %s" % line.strip()
-        print "Optimized Value: %d" % (combinationsOfBadValues_Contained(line.strip()))
-        print "Gold Value: %d" % (combinationsOfBadValues(line.strip()))
+        print "Optimized Value: %d" % (combinationsOfBadValues(line.strip()))
+        print "Gold Value: %d" % (combinationsOfBadValues_Gold(line.strip()))
         print "----"
 
 if __name__ == '__main__':
