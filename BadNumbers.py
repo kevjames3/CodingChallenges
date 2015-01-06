@@ -4,6 +4,48 @@ import math
 
 VALID_OPERATORS = ['+', '-', '']
 
+def combinationsOfBadValues_Contained(expression):
+    if len(expression) == 0:
+        return 0
+    elif len(expression) == 1:
+        return 1 if isUgly(expression) else 0
+    else:
+        return combinationsOfBadValues_Contained_Helper(expression, 1)
+
+def combinationsOfBadValues_Contained_Helper(expression, operatorPosition):
+    if(operatorPosition >= len(expression)):
+        tokenizedExpression = re.split("(\+|-)", expression)
+        expression = "" #reset the expression, as we will re-add to it
+        for token in tokenizedExpression:
+            if re.match("\d+", token):
+                token = str(int(token))
+            expression += token
+
+        #print "Expression: %s, IsUgly: %s", (expression, isUgly(expression))
+        return 1 if isUgly(expression) else 0
+    else:
+        combinations = 0
+        for operator in VALID_OPERATORS:
+            newExpression = expression[0:operatorPosition] + operator + expression[operatorPosition:]
+            operatorOffset = 1 + (0 if operator == "" else 1)
+            combinations += combinationsOfBadValues_Contained_Helper(newExpression, operatorPosition + operatorOffset)
+
+        return combinations
+
+def isUgly(expression):
+    divisbleNumbers = [2,3,5,7]
+    finalValue = eval(expression)
+    isUgly = False
+
+    if finalValue == 0:
+        isUgly = True
+    else:
+        for num in divisbleNumbers:
+            if not finalValue % num:
+                isUgly = True
+
+    return isUgly
+
 def getCombinationsOfOperators(places):
     returnedCombinations = []
 
@@ -20,32 +62,8 @@ def getCombinationsOfOperators(places):
 
     return returnedCombinations
 
-def isUgly(expression):
-    divisbleNumbers = [2,3,5,7]
-    finalValue = eval(expression)
-    isUgly = False
-
-    if finalValue == 0:
-        isUgly = True
-    else:
-        for num in divisbleNumbers:
-            if not finalValue % num:
-                isUgly = True
-
-    return isUgly
-
-def combinationsOfBadValues(value):
-    #Count how many times zeros occur, because we are going to need to compensate 
-    #if we account for optimizations
-    #additionalCombinationsIfUgly = 1
-    additionalCombinationsIfUgly = int(math.pow(len(VALID_OPERATORS), value.count('0') - 1))
-    value = re.sub('0', '', value) #Remove the case of two or more zeros for optimizations.
-    
-    spacesForOperators = 0
-    if additionalCombinationsIfUgly > 1:
-       spacesForOperators = len(str(value))
-    else:
-        spacesForOperators = len(str(value)) - 1
+def combinationsOfBadValues(value):    
+    spacesForOperators = len(str(value)) - 1
 
     operatorCombinations = getCombinationsOfOperators(spacesForOperators)
     combosUgly = 0
@@ -73,8 +91,9 @@ def combinationsOfBadValues(value):
             expression += token
 
         #Now check if it is ugly
+        #print "Expression: %s, IsUgly: %s", (expression, isUgly(expression))
         if isUgly(expression):
-            combosUgly += 1 * additionalCombinationsIfUgly
+            combosUgly += 1
 
     return combosUgly
     
@@ -83,7 +102,8 @@ def processFile(fileHandle):
         if not line.strip():
             continue;
         
-        print combinationsOfBadValues(line.strip())
+        print "Contained Recursive: %d" % (combinationsOfBadValues_Contained(line.strip()))
+        print "Old Recursive: %d" % (combinationsOfBadValues(line.strip()))
 
 if __name__ == '__main__':
     if(len(sys.argv) != 2 and len(sys.argv) != 3):
