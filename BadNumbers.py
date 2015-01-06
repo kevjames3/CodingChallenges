@@ -17,22 +17,6 @@ def isUgly(expression):
 
     return isUgly
 
-def getCombinationsOfOperators(places):
-    returnedCombinations = []
-
-    if places == 0:
-        return ['']
-    elif places == 1: #We reached the bottom of the stack
-        for operator in ['+', '-', '']:
-            returnedCombinations.append([operator])
-    else:
-        for operator in ['+', '-', '']:
-            children = getCombinationsOfOperators(places - 1)
-            for child in children:
-                returnedCombinations.append([operator] + child)
-
-    return returnedCombinations
-
 def combinationsOfBadValues(expression):
     if len(expression) == 0:
         return 0
@@ -56,7 +40,7 @@ def combinationsOfBadValues_Helper(expression, operatorPosition):
         combinations = 0
         nextChar = expression[operatorPosition:][0:2] #Peek at the next char, see if it is a 00
 
-        skipNumericalOperators = False #We will be skipping loop iterations if the next chars are '0' as +0 == -0
+        skipNumericalOperators = False #We will be skipping loop iterations if the next chars are '00' as 0+0 == 0-0 (etc)
         numericalOperators = ['+', '-']
         nonOperators = ['']
         operators = nonOperators + numericalOperators
@@ -79,48 +63,12 @@ def combinationsOfBadValues_Helper(expression, operatorPosition):
 
         return combinations
 
-def combinationsOfBadValues_Gold(value):    
-    spacesForOperators = len(str(value)) - 1
-
-    operatorCombinations = getCombinationsOfOperators(spacesForOperators)
-    combosUgly = 0
-
-    for combo in operatorCombinations:
-        #Create the expression
-        expression = ""
-        currIndex = 0
-
-        if len(combo) < len(value):
-            expression = str(value[0])
-            currIndex = 1
-
-        for operator in combo:
-            expression += operator
-            expression += str(value[currIndex])
-            currIndex += 1
-
-        #Make sure all items in the list are parsible as ints
-        tokenizedExpression = re.split("(\+|-)", expression)
-        originalExpression = expression
-        expression = "" #reset the expression, as we will re-add to it
-        for token in tokenizedExpression:
-            if re.match("\d+", token):
-                token = str(int(token))
-            expression += token
-
-        #Now check if it is ugly
-        if isUgly(expression):
-            combosUgly += 1
-
-    return combosUgly
-    
 def processFile(fileHandle):
     for line in fileHandle:
         if not line.strip():
             continue;
         
         print combinationsOfBadValues(line.strip())
-
 
 if __name__ == '__main__':
     if(len(sys.argv) != 2 and len(sys.argv) != 3):
