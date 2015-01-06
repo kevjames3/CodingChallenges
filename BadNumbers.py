@@ -55,9 +55,9 @@ def combinationsOfBadValues_Helper(expression, operatorPosition):
         return 1 if isUgly(expression) else 0
     else:
         combinations = 0
-        nextChar = expression[operatorPosition:][0:1] #Peek at the next char, see if it is a 00
+        nextChar = expression[operatorPosition:][0:2] #Peek at the next char, see if it is a 00
 
-        skipNumericalOperators = False #We will be skipping loop iterations if the next char is '0' as +0 == -0
+        skipNumericalOperators = False #We will be skipping loop iterations if the next chars are '0' as +0 == -0
         numericalOperators = ['+', '-']
         nonOperators = ['']
         operators = nonOperators + numericalOperators
@@ -72,7 +72,7 @@ def combinationsOfBadValues_Helper(expression, operatorPosition):
             offsetDueToNewCharacter = 1 + (0 if operator == "" else 1)
             combinationsFromExpression = combinationsOfBadValues_Helper(newExpression, operatorPosition + offsetDueToNewCharacter)
 
-            if nextChar is "00" and operator in numericalOperators:
+            if nextChar == "00" and operator in numericalOperators:
                 combinationsFromExpression *= 2 * (len(numericalOperators) - 1)
                 skipNumericalOperators = True   
 
