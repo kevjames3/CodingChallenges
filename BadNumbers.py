@@ -21,14 +21,19 @@ def combinationsOfBadValues_Contained_Helper(expression, operatorPosition):
                 token = str(int(token))
             expression += token
 
-        #print "Expression: %s, IsUgly: %s", (expression, isUgly(expression))
         return 1 if isUgly(expression) else 0
     else:
         combinations = 0
         for operator in VALID_OPERATORS:
+            nextChar = expression[operatorPosition:][0] #Peek at the next char, see if it is a zero
+
             newExpression = expression[0:operatorPosition] + operator + expression[operatorPosition:]
-            operatorOffset = 1 + (0 if operator == "" else 1)
-            combinations += combinationsOfBadValues_Contained_Helper(newExpression, operatorPosition + operatorOffset)
+            offsetDueToNewCharacter = 1 + (0 if operator == "" else 1)
+            combinations += combinationsOfBadValues_Contained_Helper(newExpression, operatorPosition + offsetDueToNewCharacter)
+
+            if nextChar is "0":
+                combinations *= 3
+                break
 
         return combinations
 
@@ -91,7 +96,6 @@ def combinationsOfBadValues(value):
             expression += token
 
         #Now check if it is ugly
-        #print "Expression: %s, IsUgly: %s", (expression, isUgly(expression))
         if isUgly(expression):
             combosUgly += 1
 
@@ -102,8 +106,10 @@ def processFile(fileHandle):
         if not line.strip():
             continue;
         
-        print "Contained Recursive: %d" % (combinationsOfBadValues_Contained(line.strip()))
-        print "Old Recursive: %d" % (combinationsOfBadValues(line.strip()))
+        print "For line: %s" % line.strip()
+        print "Optimized Value: %d" % (combinationsOfBadValues_Contained(line.strip()))
+        print "Gold Value: %d" % (combinationsOfBadValues(line.strip()))
+        print "----"
 
 if __name__ == '__main__':
     if(len(sys.argv) != 2 and len(sys.argv) != 3):
