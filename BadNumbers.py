@@ -1,27 +1,26 @@
 import sys
 import re
 import math
-import time
 
-def isUgly(expression):
+def isBad(expression):
     divisbleNumbers = [2,3,5,7]
     finalValue = eval(expression)
-    isUgly = False
+    isBad = False
 
     if finalValue == 0:
-        isUgly = True
+        isBad = True
     else:
         for num in divisbleNumbers:
             if not finalValue % num:
-                isUgly = True
+                isBad = True
 
-    return isUgly
+    return isBad
 
 def combinationsOfBadValues(expression):
     if len(expression) == 0:
         return 0
     elif len(expression) == 1:
-        return 1 if isUgly(expression) else 0
+        return 1 if isBad(expression) else 0
     else:
         return combinationsOfBadValues_Helper(expression, 1)
 
@@ -35,7 +34,7 @@ def combinationsOfBadValues_Helper(expression, operatorPosition):
                 token = str(int(token))
             expression += token
 
-        return 1 if isUgly(expression) else 0
+        return 1 if isBad(expression) else 0
     else:
         combinations = 0
         nextChar = expression[operatorPosition:][0:2] #Peek at the next char, see if it is a 00
