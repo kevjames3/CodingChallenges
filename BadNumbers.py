@@ -1,3 +1,20 @@
+'''
+Take a file with a list of values seperated by new lines.
+Given the criteria of the function "isBad", determine the number of combinations
+of +, -, or "" between each digit resolves to a bad number.  
+Example: 012 => 0+12, 01-2, 0+1-2, (etc) 
+
+Given a digit, there are 3^(D-1) expressions, where D are the number of digits.
+Find which resolve to a bad number.
+
+Testfile example:
+
+1
+9
+011
+12345 
+'''
+
 import sys
 import re
 import math
