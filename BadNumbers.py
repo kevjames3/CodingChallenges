@@ -51,7 +51,6 @@ def combinationsOfBadValues_Helper(expression, operatorPosition):
                 token = str(int(token))
             expression += token
 
-        #print "Expression: %s, IsUgly: %s" % (originalExpression, isUgly(expression))
         return 1 if isUgly(expression) else 0
     else:
         combinations = 0
@@ -110,7 +109,6 @@ def combinationsOfBadValues_Gold(value):
             expression += token
 
         #Now check if it is ugly
-        #print "Expression: %s, IsUgly: %s" % (originalExpression, isUgly(expression))
         if isUgly(expression):
             combosUgly += 1
 
@@ -121,12 +119,8 @@ def processFile(fileHandle):
         if not line.strip():
             continue;
         
-        t0 = time.clock()
-        print "For line: %s" % line.strip()
-        print "Optimized Value: %d, Time %2.2f" % (combinationsOfBadValues(line.strip()), time.clock() - t0)
-        t0 = time.clock()
-        print "Gold Value: %d, Time %2.2f" % (combinationsOfBadValues_Gold(line.strip()), time.clock() - t0)
-        print "----"
+        print combinationsOfBadValues(line.strip())
+
 
 if __name__ == '__main__':
     if(len(sys.argv) != 2 and len(sys.argv) != 3):
