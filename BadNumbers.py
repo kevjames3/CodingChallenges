@@ -1,6 +1,7 @@
 import sys
 import re
 import math
+import time
 
 def isUgly(expression):
     divisbleNumbers = [2,3,5,7]
@@ -120,9 +121,11 @@ def processFile(fileHandle):
         if not line.strip():
             continue;
         
+        t0 = time.clock()
         print "For line: %s" % line.strip()
-        print "Optimized Value: %d" % (combinationsOfBadValues(line.strip()))
-        print "Gold Value: %d" % (combinationsOfBadValues_Gold(line.strip()))
+        print "Optimized Value: %d, Time %2.2f" % (combinationsOfBadValues(line.strip()), time.clock() - t0)
+        t0 = time.clock()
+        print "Gold Value: %d, Time %2.2f" % (combinationsOfBadValues_Gold(line.strip()), time.clock() - t0)
         print "----"
 
 if __name__ == '__main__':
